@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Info about User</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center mb-4">User Information</h2>
+
+            <div class="card shadow">
+                <div class="card-body">
+                    <p><strong>First Name:</strong> <span th:text="${user.firstName}">John</span></p>
+                    <p><strong>Last Name:</strong> <span th:text="${user.lastName}">Doe</span></p>
+                    <p><strong>Email:</strong> <span th:text="${user.email}">john.doe@example.com</span></p>
+                    <p><strong>Role:</strong> <span th:text="${user.role}">USER</span></p>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a th:href="@{/users/all}" class="btn btn-outline-secondary">Back to Users List</a>
+                <a th:href="@{/home}" class="btn btn-outline-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

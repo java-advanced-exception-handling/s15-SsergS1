@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks of To-Do List</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <h2 class="text-center mb-4" th:text="'Tasks of ' + ${todo.title}">Tasks</h2>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="mb-3">
+                <a th:href="@{/tasks/create/todos/{todo_id}(todo_id=${todo.id})}" class="btn btn-success">Add New Task</a>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>State</th>
+                    <th>Operations</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task, iterStat : ${tasks}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${task.name}">Task name</td>
+                    <td th:text="${task.priority}">MEDIUM</td>
+                    <td th:text="${task.state.name}">NEW</td>
+                    <td>
+                        <a th:href="@{/tasks/{task_id}/update/todos/{todo_id}(task_id=${task.id}, todo_id=${todo.id})}" class="btn btn-sm btn-primary">Edit</a>
+                        <form th:action="@{/tasks/{task_id}/delete/todos/{todo_id}(task_id=${task.id}, todo_id=${todo.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this task?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-3">
+            <h4 class="mb-3">Collaborators</h4>
+            <ul class="list-group mb-3">
+                <li th:each="collaborator : ${todo.collaborators}" class="list-group-item d-flex justify-content-between align-items-center">
+                    <span th:text="${collaborator.firstName} + ' ' + ${collaborator.lastName}">Collaborator</span>
+                    <form th:action="@{/todos/{id}/remove(id=${todo.id})}" method="post" style="display: inline;">
+                        <input type="hidden" name="user_id" th:value="${collaborator.id}"/>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                    </form>
+                </li>
+            </ul>
+
+            <h4 class="mb-3">Add Collaborator</h4>
+            <form th:action="@{/todos/{id}/add(id=${todo.id})}" method="post">
+                <div class="input-group">
+                    <select name="user_id" class="form-select" required>
+                        <option value="" disabled selected>Select user...</option>
+                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName} + ' ' + ${user.lastName}"></option>
+                    </select>
+                    <button class="btn btn-outline-primary" type="submit">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a th:href="@{/todos/all/users/{user_id}(user_id=${todo.owner.id})}">Back to To-Do Lists</a>
+    </div>
+</div>
+</body>
+</html>

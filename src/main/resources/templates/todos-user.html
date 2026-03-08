@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All To-Dos of User</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <h2 class="text-center mb-4" th:text="'To-Do Lists of ' + ${user.firstName} + ' ' + ${user.lastName}">To-Do Lists</h2>
+
+    <div class="mb-3">
+        <a th:href="@{/todos/create/users/{owner_id}(owner_id=${user.id})}" class="btn btn-success">Create New To-Do</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Title</th>
+            <th>Created At</th>
+            <th>Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="todo, iterStat : ${todos}">
+            <td th:text="${iterStat.count}">1</td>
+            <td>
+                <a th:href="@{/todos/{id}/tasks(id=${todo.id})}" th:text="${todo.title}">Title</a>
+            </td>
+            <td th:text="${#temporals.format(todo.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01</td>
+            <td>
+                <a th:href="@{/todos/{todo_id}/update/users/{owner_id}(todo_id=${todo.id}, owner_id=${user.id})}" class="btn btn-sm btn-primary">Edit</a>
+                <form th:action="@{/todos/{todo_id}/delete/users/{owner_id}(todo_id=${todo.id}, owner_id=${user.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this To-Do?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <a th:href="@{/home}">Back to Home</a>
+    </div>
+</div>
+</body>
+</html>

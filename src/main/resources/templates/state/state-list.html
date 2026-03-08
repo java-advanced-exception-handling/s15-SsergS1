@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage States</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+
+    <h1 class="text-center mb-4">Manage States</h1>
+
+    <div class="mb-3">
+        <a class="btn btn-primary" th:href="@{/states/create}">Add New State</a>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="state: ${states}">
+            <td th:text="${state.name}"></td>
+            <td>
+                <a th:href="@{|/states/${state.id}/update|}" class="btn btn-sm btn-warning">Edit</a>
+                <form th:action="@{|/states/${state.id}/delete|}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this state?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
