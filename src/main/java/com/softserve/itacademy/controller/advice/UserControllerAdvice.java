@@ -1,6 +1,6 @@
 package com.softserve.itacademy.controller.advice;
 
-import com.softserve.itacademy.config.exception.NullEntityReferenceException;
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;

@@ -5,7 +5,6 @@ import com.softserve.itacademy.dto.todoDto.ToDoDtoConverter;
 import com.softserve.itacademy.dto.todoDto.UpdateToDoDto;
 import com.softserve.itacademy.model.ToDo;
 import com.softserve.itacademy.service.ToDoService;
-import com.softserve.itacademy.model.Task;
 import com.softserve.itacademy.model.User;
 import com.softserve.itacademy.service.TaskService;
 import com.softserve.itacademy.service.UserService;
@@ -16,11 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +32,8 @@ public class ToDoController {
 
     @GetMapping("/create/users/{owner_id}")
     public String createToDoForm(@PathVariable("owner_id") Long ownerId, Model model) {
+        log.info("GET request for create ToDo form for owner id: {}", ownerId);
+        userService.readById(ownerId);
         CreateToDoDto todoDto = new CreateToDoDto();
         todoDto.setOwnerId(ownerId);
         model.addAttribute("todo", todoDto);
@@ -46,9 +43,9 @@ public class ToDoController {
 
     @PostMapping("/create/users/{owner_id}")
     public String createToDo(@PathVariable("owner_id") Long ownerId,
-                            @Validated @ModelAttribute("todo") CreateToDoDto todoDto,
-                            BindingResult result,
-                            Model model) {
+                             @Validated @ModelAttribute("todo") CreateToDoDto todoDto,
+                             BindingResult result,
+                             Model model) {
         log.info("POST request to create ToDo for owner id: {}", ownerId);
         if (result.hasErrors()) {
             log.warn("Validation failed for ToDo creation: {}", result.getAllErrors());
@@ -57,15 +54,8 @@ public class ToDoController {
         }
         User owner = userService.readById(ownerId);
         ToDo todo = todoDtoConverter.toEntity(todoDto, owner);
-        try {
-            todoService.create(todo);
-            log.info("ToDo created successfully for owner id: {}", ownerId);
-        } catch (IllegalArgumentException e) {
-            log.warn("Error during ToDo creation: {}", e.getMessage());
-            result.rejectValue("title", "error.todo", e.getMessage());
-            model.addAttribute("ownerId", ownerId);
-            return "create-todo";
-        }
+        todoService.create(todo);
+        log.info("ToDo created successfully for owner id: {}", ownerId);
         return "redirect:/todos/all/users/" + ownerId;
     }
 
@@ -86,10 +76,10 @@ public class ToDoController {
 
     @PostMapping("/{todo_id}/update/users/{owner_id}")
     public String updateToDo(@PathVariable("todo_id") Long todoId,
-                            @PathVariable("owner_id") Long ownerId,
-                            @Validated @ModelAttribute("todo") UpdateToDoDto todoDto,
-                            BindingResult result,
-                            Model model) {
+                             @PathVariable("owner_id") Long ownerId,
+                             @Validated @ModelAttribute("todo") UpdateToDoDto todoDto,
+                             BindingResult result,
+                             Model model) {
         log.info("POST request to update ToDo id: {}", todoId);
         if (result.hasErrors()) {
             log.warn("Validation failed for ToDo update id {}: {}", todoId, result.getAllErrors());
@@ -98,20 +88,14 @@ public class ToDoController {
         ToDo todo = todoService.readById(todoId);
         User owner = userService.readById(ownerId);
         todoDtoConverter.fillFields(todo, todoDto, owner);
-        try {
-            todoService.update(todo);
-            log.info("ToDo id {} updated successfully", todoId);
-        } catch (IllegalArgumentException e) {
-            log.warn("Error during ToDo update: {}", e.getMessage());
-            result.rejectValue("title", "error.todo", e.getMessage());
-            return "update-todo";
-        }
+        todoService.update(todo);
+        log.info("ToDo id {} updated successfully", todoId);
         return "redirect:/todos/all/users/" + ownerId;
     }
 
     @PostMapping("/{todo_id}/delete/users/{owner_id}")
     public String delete(@PathVariable("todo_id") Long todoId,
-                        @PathVariable("owner_id") Long ownerId) {
+                         @PathVariable("owner_id") Long ownerId) {
         log.info("POST request to delete ToDo id: {}", todoId);
         todoService.delete(todoId);
         log.info("ToDo id {} deleted successfully", todoId);
@@ -121,6 +105,7 @@ public class ToDoController {
     @GetMapping("/all/users/{user_id}")
     public String getAll(@PathVariable("user_id") Long userId, Model model) {
         log.info("GET request to list ToDos for user id: {}", userId);
+        userService.readById(userId);
         List<ToDo> todos = todoService.getByUserId(userId);
         model.addAttribute("todos", todos);
         model.addAttribute("user", userService.readById(userId));
@@ -141,7 +126,7 @@ public class ToDoController {
 
     @PostMapping("/{id}/add")
     public String addCollaborator(@PathVariable("id") Long todoId,
-                                 @RequestParam("user_id") Long userId) {
+                                  @RequestParam("user_id") Long userId) {
         log.info("POST request to add collaborator id {} to ToDo id {}", userId, todoId);
         todoService.addCollaborator(todoId, userId);
         return "redirect:/todos/" + todoId + "/tasks";
@@ -149,11 +134,9 @@ public class ToDoController {
 
     @PostMapping("/{id}/remove")
     public String removeCollaborator(@PathVariable("id") Long todoId,
-                                    @RequestParam("user_id") Long userId) {
+                                     @RequestParam("user_id") Long userId) {
         log.info("POST request to remove collaborator id {} from ToDo id {}", userId, todoId);
         todoService.removeCollaborator(todoId, userId);
         return "redirect:/todos/" + todoId + "/tasks";
     }
-
-    // TODO: Implement exception handling for EntityNotFoundException
 }

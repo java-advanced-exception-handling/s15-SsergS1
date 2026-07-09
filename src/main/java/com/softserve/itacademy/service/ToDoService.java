@@ -1,6 +1,6 @@
 package com.softserve.itacademy.service;
 
-import com.softserve.itacademy.config.exception.NullEntityReferenceException;
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.model.ToDo;
 import com.softserve.itacademy.model.User;
 import com.softserve.itacademy.repository.ToDoRepository;

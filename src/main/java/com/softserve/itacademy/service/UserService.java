@@ -1,6 +1,6 @@
 package com.softserve.itacademy.service;
 
-import com.softserve.itacademy.config.exception.NullEntityReferenceException;
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.dto.userDto.CreateUserDto;
 import com.softserve.itacademy.dto.userDto.UpdateUserDto;
 import com.softserve.itacademy.dto.userDto.UserDto;
@@ -60,6 +60,10 @@ public class UserService {
 
     @Transactional
     public UserDto update(UpdateUserDto updateUserDto) {
+        if (updateUserDto == null) {
+            log.error("Attempted to update a null user");
+            throw new NullEntityReferenceException("User cannot be 'null'");
+        }
         log.info("Updating user with id: {}", updateUserDto.getId());
         User user = userRepository.findById(updateUserDto.getId()).orElseThrow(
                 () -> {

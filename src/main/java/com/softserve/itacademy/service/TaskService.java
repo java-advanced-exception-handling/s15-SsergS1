@@ -5,7 +5,7 @@ import com.softserve.itacademy.dto.TaskDto;
 import com.softserve.itacademy.model.Task;
 import com.softserve.itacademy.repository.StateRepository;
 import com.softserve.itacademy.repository.ToDoRepository;
-import com.softserve.itacademy.config.exception.NullEntityReferenceException;
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

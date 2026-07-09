@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/template}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="margin: 0 auto; width: max-content; text-align: center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+            <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm.044-.997a.88.88 0 0 0-.822.476L.218 12.492a.878.878 0 0 0 .207.993.873.873 0 0 0 .739.329h13.672a.873.873 0 0 0 .739-.329.878.878 0 0 0 .207-.993L8.84 1.495A.88.88 0 0 0 8.016 1.02l-.034-.001z"/>
+            <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.538a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+        </svg>
+        <h1 style="margin: 0 auto; width: max-content">Error</h1>
+        <h2 style="margin: 0 auto; width: max-content">Something went wrong</h2>
+        <div th:if="${errorMessage}" class="text-center mt-3 text-muted">
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <div class="mt-4">
+            <a href="/" class="btn btn-primary">Go to Home</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
